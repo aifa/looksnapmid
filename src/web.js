@@ -8,55 +8,9 @@ app.use(express.logger());
 //New call to compress content
 app.use(express.compress());
 app.use(express.static(__dirname + '/client'));
-app.set('views', __dirname + '/client/html');
+app.set('views', __dirname + '/client');
 app.engine('html', require('ejs').renderFile);
-
-app.get('/', function(request, response) {
-  response.render('uploadDemo.html');
-});
-
-app.post('/compose/:type', function(req, res) {
-	 var type = req.params.type;
-	 var data='' ;
-	 req.on('data', function(buffer){
-		 data += buffer;
-	 });
-	 
-	 req.on('end', function(buffer){
-		 var submissionData = JSON.parse(data);
-		 if (submissionData!=null){
-			 res.writeHead(200);
-			 res.write(helperModule.composeName(type,submissionData));
-			 res.end();
-		 }else{
-			 res.writeHead(400);
-			 res.end();
-		 }
-		 
-	 });
- });
-
-app.post('/validate', function(req, res) {
-	 var type = req.params.type;
-	 var data='' ;
-	 req.on('data', function(buffer){
-		 data += buffer;
-	 });
-	 
-	 req.on('end', function(buffer){
-		 var submissionData = JSON.parse(data);
-		 console.log(submissionData);
-		 if (submissionData!=null){
-			 res.writeHead(200);
-			 res.write(helperModule.validateFileName(submissionData.inputVal));
-			 res.end();
-		 }else{
-			 res.writeHead(400);
-			 res.end();
-		 }
-	 });
-});
-
+app.set('view engine', 'html');
 
 app.post('/bcksubmit', function(req, res) {
 	 var type = req.params.type;
@@ -70,7 +24,7 @@ app.post('/bcksubmit', function(req, res) {
 		 console.log(submissionData);
 		 if (submissionData!=null){
 			 res.writeHead(200);
-			 res.write('success');
+			 res.write(data);
 			 res.end();
 		 }else{
 			 res.writeHead(400);
@@ -95,9 +49,6 @@ app.post('/imgsubmit', function(req, res) {
 		 //var submissionData = JSON.parse(data);
 		 console.log(data);
 		 if (data!=null){
-			 res.writeHead(200);
-			 //res.write(helperModule.validateFileName(submissionData.inputVal));
-			 res.end();
 				//create imgResponse
 			var imgRequest = {
 					  info: "looksnap img request",
@@ -130,7 +81,12 @@ app.post('/imgsubmit', function(req, res) {
 			  });
 
 			  resBck.on('end', function() {
-			    console.log(responseString);
+			    //console.log(responseString);
+
+				setTimeout(function() {
+				    res.render('product');
+			    }, 1800);
+
 			  });
 			});
 			
